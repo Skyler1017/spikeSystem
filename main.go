@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gomodule/redigo/redis"
 	"net/http"
 	"os"
 	localSpike2 "spikeSystem/localSpike"
@@ -8,15 +9,13 @@ import (
 	"spikeSystem/util"
 	"strconv"
 	"strings"
-
-	"github.com/garyburd/redigo/redis"
 )
 
 var (
-	localSpike localSpike2.LocalSpike
+	localSpike  localSpike2.LocalSpike
 	remoteSpike remoteSpike2.RemoteSpikeKeys
-	redisPool *redis.Pool
-	done chan int
+	redisPool   *redis.Pool
+	done        chan int
 )
 
 //初始化要使用的结构体和redis连接池
@@ -47,7 +46,7 @@ func handleReq(w http.ResponseWriter, r *http.Request) {
 	<-done
 	//全局读写锁
 	if localSpike.LocalDeductionStock() && remoteSpike.RemoteDeductionStock(redisConn) {
-		util.RespJson(w, 1,  "抢票成功", nil)
+		util.RespJson(w, 1, "抢票成功", nil)
 		LogMsg = LogMsg + "result:1,localSales:" + strconv.FormatInt(localSpike.LocalSalesVolume, 10)
 	} else {
 		util.RespJson(w, -1, "已售罄", nil)
