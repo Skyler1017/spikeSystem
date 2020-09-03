@@ -42,7 +42,8 @@ func NewPool() *redis.Pool {
 //远端统一扣库存
 func (RemoteSpikeKeys *RemoteSpikeKeys) RemoteDeductionStock(conn redis.Conn) bool {
 	lua := redis.NewScript(1, LuaScript)
-	result, err := redis.Int(lua.Do(conn, RemoteSpikeKeys.SpikeOrderHashKey, RemoteSpikeKeys.TotalInventoryKey, RemoteSpikeKeys.QuantityOfOrderKey))
+	result, err := redis.Int(lua.Do(conn, RemoteSpikeKeys.SpikeOrderHashKey,
+		RemoteSpikeKeys.TotalInventoryKey, RemoteSpikeKeys.QuantityOfOrderKey))
 	if err != nil {
 		return false
 	}

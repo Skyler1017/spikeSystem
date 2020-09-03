@@ -18,8 +18,14 @@ var (
 	done        chan int
 )
 
+func main() {
+	initialize()
+	http.HandleFunc("/buy/ticket", handleReq)
+	http.ListenAndServe(":3005", nil)
+}
+
 //初始化要使用的结构体和redis连接池
-func init() {
+func initialize() {
 	localSpike = localSpike2.LocalSpike{
 		LocalInStock:     150,
 		LocalSalesVolume: 0,
@@ -32,11 +38,6 @@ func init() {
 	redisPool = remoteSpike2.NewPool()
 	done = make(chan int, 1)
 	done <- 1
-}
-
-func main() {
-	http.HandleFunc("/buy/ticket", handleReq)
-	http.ListenAndServe(":3005", nil)
 }
 
 //处理请求函数,根据请求将响应结果信息写入日志
